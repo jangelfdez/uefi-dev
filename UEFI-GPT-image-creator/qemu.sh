@@ -4,14 +4,16 @@
 qemu-system-x86_64 \
 -drive format=raw,file=test.hdd \
 -bios /usr/share/OVMF/OVMF-pure-efi.fd \
--m 256M \
--vga std \
 -name TESTOS \
 -machine q35 \
--usb \
--device usb-mouse \
--rtc base=localtime \
--net none
+-net none \
+-S -s
+# -m 256M \
+# -vga std \
+# -usb \
+# -device usb-mouse \
+# -rtc base=localtime \
+
 
 # For testing other drive physical/logical sizes. Although this did not work for me for lba size > 512
 #qemu-system-x86_64 \

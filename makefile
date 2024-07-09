@@ -1,14 +1,15 @@
 .POSIX:
 .PHONY: all clean
 
-SOURCE = efi.c
+SOURCE = uefi.c
 TARGET = BOOTX64.EFI
 
 # Uncomment for gcc
 CC = x86_64-w64-mingw32-gcc \
 	-Wl,--subsystem,10 \
 	-e efi_main \
-	-fmax-errors=50
+	-fmax-errors=50 
+	-g
 
 # Uncomment for clang
 # CC = clang \
@@ -21,6 +22,7 @@ CFLAGS = \
 	-std=c17 \
 	-Wall \
 	-Wextra \
+	-Werror \
 	-Wpedantic \
 	-mno-red-zone \
 	-ffreestanding \

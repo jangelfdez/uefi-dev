@@ -1,7 +1,16 @@
 #ifndef UEFI_DATA_TYPES_H
 #define UEFI_DATA_TYPES_H
 
+#if __has_include(<uchar.h>) 
+#include <uchar.h>
+#endif
+
 #include <stdint.h>
+#include <stddef.h> // NULL
+
+#ifndef _UCHAR_H
+typedef uint_least16_t char16_t;
+#endif
 
 // UEFI Data Types (2.3.1)
 // https://uefi.org/specs/UEFI/2.10/02_Overview.html#data-types
@@ -37,7 +46,7 @@ typedef char            CHAR8;
 // 2-byte Character. Unless otherwise specified all characters and strings 
 // are stored in the UCS-2 encoding format as defined by Unicode 2.1 and 
 // ISO/IEC 10646 standards.
-typedef uint16_t        CHAR16;
+typedef char16_t        CHAR16;
 
 // Undeclared type
 typedef void            VOID;
