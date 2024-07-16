@@ -57,7 +57,7 @@ corresponding EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.
 typedef struct _EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
 
 // Resets the text output device hardware.
-typedef EFI_STATUS (EFIAPI EFI_TEXT_RESET) (
+typedef EFI_STATUS (EFIAPI *EFI_TEXT_RESET) (
     IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL           *This,                 // A pointer to the EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL instance.
     IN BOOLEAN                                   ExtendedVerification   // Indicates that the driver may perform a more exhaustive verification operation of the device during reset.
 );
@@ -125,7 +125,7 @@ typedef struct {
 
 
 typedef struct _EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL {
-    EFI_TEXT_RESET                           *Reset;                // Reset the ConsoleOut device. EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset() .
+    EFI_TEXT_RESET                           Reset;                // Reset the ConsoleOut device. EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset() .
     EFI_TEXT_STRING                          OutputString;          // Displays a string on the ConsoleOut device, EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString() .
     EFI_TEXT_TEST_STRING                     TestString;            // Tests to see if the ConsoleOut device supports this string. See TestString() EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.TestString() .
     EFI_TEXT_QUERY_MODE                      QueryMode;             // Queries information concerning the output devices's supported text mode(s), EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.QueryMode() .
@@ -137,6 +137,60 @@ typedef struct _EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL {
     SIMPLE_TEXT_OUTPUT_MODE                  *Mode;                 // Pointer to SIMPLE_TEXT_OUTPUT_MODE data. Type SIMPLE_TEXT_OUTPUT_MODE is defined in “Related Definitions” below.
 } EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL;
 
+//******************************************************
+// EFI SCAN CODES for EFI_SIMPLE_TEXT_INPUT_PROTOCOL
+//******************************************************
+#define SCAN_NULL                         0x00
+#define SCAN_UP                           0x01
+#define SCAN_DOWN                         0x02
+#define SCAN_RIGHT                        0x03
+#define SCAN_LEFT                         0x04
+#define SCAN_HOME                         0x05
+#define SCAN_END                          0x06
+#define SCAN_INSERT                       0x07
+#define SCAN_DELETE                       0x08
+#define SCAN_PAGE_UP                      0x09
+#define SCAN_PAGE_DOWN                    0x0A
+#define SCAN_F1                           0x0B
+#define SCAN_F2                           0x0C
+#define SCAN_F3                           0x0D
+#define SCAN_F4                           0x0E
+#define SCAN_F5                           0x0F
+#define SCAN_F6                           0x10
+#define SCAN_F7                           0x11
+#define SCAN_F8                           0x12
+#define SCAN_F9                           0x13
+#define SCAN_F10                          0x14
+#define SCAN_ESCAPE                       0x17
+
+//******************************************************
+// EFI SCAN CODES for EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL
+//******************************************************
+#define SCAN_F11                          0x15
+#define SCAN_F12                          0x16
+#define SCAN_PAUSE                        0x48
+#define SCAN_F13                          0x68
+#define SCAN_F14                          0x69
+#define SCAN_F15                          0x6A
+#define SCAN_F16                          0x6B
+#define SCAN_F17                          0x6C
+#define SCAN_F18                          0x6D
+#define SCAN_F19                          0x6E
+#define SCAN_F20                          0x6F
+#define SCAN_F21                          0x70
+#define SCAN_F22                          0x71
+#define SCAN_F23                          0x72
+#define SCAN_F24                          0x73
+#define SCAN_MUTED                        0x7F
+#define SCAN_VOLUME_UP                    0x80
+#define SCAN_VOLUME_DOWN                  0x81
+#define SCAN_BRIGHTNESS_UP                0x100
+#define SCAN_BRIGHTNESS_DOWN              0x101
+#define SCAN_SUSPEND                      0x102
+#define SCAN_HIBERNATE                    0x103
+#define SCAN_TOGGLE_DISPLAY               0x104
+#define SCAN_RECOVERY                     0x105
+#define SCAN_EJECT                        0x106
 
 //******************************************************
 // UNICODE DRAWING CHARACTERS

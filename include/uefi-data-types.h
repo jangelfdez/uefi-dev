@@ -23,9 +23,9 @@ typedef uint8_t         BOOLEAN;
 // (4 bytes on supported 32-bit processor instructions, 
 // 8 bytes on supported 64-bit processor instructions, 
 // 16 bytes on supported 128-bit processor instructions)
-typedef int             INTN;
+typedef int64_t         INTN;
 // Unsigned value of native width.
-typedef unsigned int    UINTN;
+typedef uint64_t        UINTN;
 
 typedef int8_t          INT8;
 typedef int16_t         INT16;
