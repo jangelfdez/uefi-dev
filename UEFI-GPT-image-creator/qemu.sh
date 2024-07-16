@@ -7,7 +7,7 @@ qemu-system-x86_64 \
 -name TESTOS \
 -machine q35 \
 -net none \
--S -s
+#-S -s
 # -m 256M \
 # -vga std \
 # -usb \
