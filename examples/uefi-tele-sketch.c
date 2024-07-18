@@ -1,8 +1,8 @@
 #include "../include/uefi.h"
 
 #define CHARACTER_WIDTH 1
-#define LEFT_FRAME_PADDING 1
-#define RIGT_FRAME_PADDING 1
+#define FRAME_LEFT_PADDING 1
+#define FRAME_RIGHT_PADDING 1
 #define FRAME_LEFT_RIGHT_WIDTH 2
 #define FRAME_TOP_BOTTOM_WIDTH 1
 
@@ -90,13 +90,13 @@ void render_background()
     for (UINTN i = 0; i < console_rows; i++)
     {
         // Left-side drawing frame
-        _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, LEFT_FRAME_PADDING, i); // First column is empy
+        _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, FRAME_LEFT_PADDING, i); // First column is empy
         _SystemTable->ConOut->OutputString(_SystemTable->ConOut, double_frame);
 
         // Top and bottom drawing frame
         if (i == 0 || i == console_rows - 1)
         {
-            for (UINTN j = (LEFT_FRAME_PADDING + FRAME_LEFT_RIGHT_WIDTH); j < (console_columns - LEFT_FRAME_PADDING); j++)
+            for (UINTN j = (FRAME_RIGHT_PADDING + FRAME_LEFT_RIGHT_WIDTH); j < (console_columns - FRAME_LEFT_PADDING); j++)
             {
                 _SystemTable->ConOut->OutputString(_SystemTable->ConOut, single_frame);
             }
@@ -104,7 +104,7 @@ void render_background()
         else
         {
             // Right-side drawing frame
-            _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, console_columns - LEFT_FRAME_PADDING - FRAME_LEFT_RIGHT_WIDTH, i); // Last column is empty
+            _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, console_columns - FRAME_LEFT_PADDING - FRAME_LEFT_RIGHT_WIDTH, i); // Last column is empty
             _SystemTable->ConOut->OutputString(_SystemTable->ConOut, double_frame);
         }
     }
@@ -132,7 +132,7 @@ void process_key_stroke(EFI_INPUT_KEY key)
         }
         break;
     case SCAN_RIGHT:
-        if (!(cursor_column == console_columns - FRAME_LEFT_RIGHT_WIDTH - LEFT_FRAME_PADDING - CHARACTER_WIDTH))
+        if (!(cursor_column == console_columns - FRAME_LEFT_RIGHT_WIDTH - FRAME_LEFT_PADDING - CHARACTER_WIDTH))
         {
             cursor_column++;
         }
