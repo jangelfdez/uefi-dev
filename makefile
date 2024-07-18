@@ -92,9 +92,14 @@ generate-image:
 	$(Q)cd UEFI-GPT-image-creator && ./write_gpt
 
 # Target to run the example
-run-example: generate-image $(EXAMPLE) 
+run-example: all generate-image $(EXAMPLE) 
 	@echo "Running $(EXAMPLE)"
 	$(Q)@qemu-system-x86_64 -drive format=raw,file=./UEFI-GPT-image-creator/test.hdd -bios /usr/share/OVMF/OVMF-pure-efi.fd -name TESTOS -machine q35 -net none
+
+debug-example: all generate-image $(EXAMPLE) 
+	@echo "Running $(EXAMPLE)"
+	$(Q)@qemu-system-x86_64 -drive format=raw,file=./UEFI-GPT-image-creator/test.hdd -bios /usr/share/OVMF/OVMF-pure-efi.fd -name TESTOS -machine q35 -net none -S -s
+
 
 clean:
 	@echo "Cleaning up $(OUTPUT_DIRECTORY) directory"
