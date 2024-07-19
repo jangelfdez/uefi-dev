@@ -56,7 +56,8 @@ _snake_direction direction = {1, 0};
 // Function prototypes
 void render_background();
 void refresh_screen();
-void add_snake_node(_snake *snake, UINTN x, UINTN y);
+void add_snake_tail_node(_snake *snake, UINTN x, UINTN y);
+void add_snake_head_node(_snake *snake, UINTN x, UINTN y);
 void process_key_stroke(EFI_INPUT_KEY key);
 void game_over();
 
@@ -83,9 +84,9 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
     snake.length = 0;
 
     // Define the initial position of the snake in the middle of the console
-    add_snake_node(&snake, console_columns / 2, console_rows / 2);
+    add_snake_tail_node(&snake, console_columns / 2, console_rows / 2);
 
-    _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, console_columns / 2 + 1, console_rows / 2);
+    _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, console_columns / 2, console_rows / 2);
 
     // Configure the event to be notified to refresh the game screen
     SystemTable->BootServices->CreateEvent(EVT_TIMER | EVT_NOTIFY_SIGNAL,
@@ -197,7 +198,7 @@ void process_key_stroke(EFI_INPUT_KEY key)
         _SystemTable->RuntimeServices->ResetSystem(EfiResetShutdown, EFI_SUCCESS, 0, NULL);
         return;
     case SCAN_F1:
-        game_over();
+        add_snake_tail_node(&snake, snake.head->x, snake.head->y);
         break;
     default:
         break;
@@ -205,9 +206,16 @@ void process_key_stroke(EFI_INPUT_KEY key)
 }
 
 // Add a new node to the snake
-void add_snake_node(_snake *snake, UINTN x, UINTN y)
+void add_snake_tail_node(_snake *snake, UINTN x, UINTN y)
 {
-    _snake_node *new_node = NULL;
+    _snake_node *new_node;
+
+    // Allocate memory for the new node
+    EFI_STATUS status = _SystemTable->BootServices->AllocatePool(EfiLoaderData, sizeof(_snake_node), (void **)&new_node);
+    if (status != EFI_SUCCESS)
+    {
+        _SystemTable->ConOut->OutputString(_SystemTable->ConOut, L"AllocatePool failed\r\n");
+    }
 
     new_node->x = x;
     new_node->y = y;
@@ -229,35 +237,78 @@ void add_snake_node(_snake *snake, UINTN x, UINTN y)
     snake->length++;
 }
 
+// Remove a node in the snake tail
+void remove_snake_tail_node(_snake *snake)
+{
+    _snake_node *current = snake->tail;
+    snake->tail = current->prev;
+    snake->tail->next = NULL;
+    snake->length--;
+}
+
+void add_snake_head_node(_snake *snake, UINTN x, UINTN y)
+{
+    _snake_node *new_node;
+
+    EFI_STATUS status = _SystemTable->BootServices->AllocatePool(EfiLoaderData, sizeof(_snake_node), (void **)&new_node);
+    if (status != EFI_SUCCESS)
+    {
+        _SystemTable->ConOut->OutputString(_SystemTable->ConOut, L"AllocatePool failed\r\n");
+    }
+
+    new_node->x = x;
+    new_node->y = y;
+    new_node->next = NULL;
+    new_node->prev = NULL;
+
+    if (snake->head == NULL)
+    {
+        snake->head = new_node;
+        snake->tail = new_node;
+    }
+    else
+    {
+        snake->head->prev = new_node;
+        new_node->next = snake->head;
+        snake->head = new_node;
+    }
+
+    snake->length++;
+}
+
 void refresh_screen(EFI_EVENT event __attribute__((unused)), void *context __attribute__((unused)))
 {
-
     // Clean the snake tail position
     _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, snake.tail->x, snake.tail->y);
     _SystemTable->ConOut->OutputString(_SystemTable->ConOut, u" ");
 
-    // Move the snake into the direction selected by the user
-    snake.head->x += direction.x;
-    snake.head->y += direction.y;
-
-    if (snake.head->y == FRAME_TOP_BOTTOM_WIDTH || 
-        snake.head->y == console_rows - FRAME_TOP_BOTTOM_WIDTH - CHARACTER_WIDTH || 
+    if (snake.head->y == FRAME_TOP_BOTTOM_WIDTH ||
+        snake.head->y == console_rows - FRAME_TOP_BOTTOM_WIDTH - CHARACTER_WIDTH ||
         snake.head->x == FRAME_LEFT_RIGHT_WIDTH + CHARACTER_WIDTH ||
         snake.head->x == console_columns - FRAME_LEFT_RIGHT_WIDTH - FRAME_LEFT_PADDING - CHARACTER_WIDTH)
     {
         game_over();
     }
+    // Add a new snake node to the head of the snake
+    add_snake_head_node(&snake, snake.head->x += direction.x, snake.head->y += direction.y);
+    // Remove the last node of the snake
+    remove_snake_tail_node(&snake);
 
-    // Render the snake head position
-    _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, snake.head->x, snake.head->y);
-    _SystemTable->ConOut->OutputString(_SystemTable->ConOut, cursor);
+    // Traverse the snake and render the snake nodes
+    _snake_node *current = snake.head;
+    while (current != NULL)
+    {
+        _SystemTable->ConOut->SetCursorPosition(_SystemTable->ConOut, current->x, current->y);
+        _SystemTable->ConOut->OutputString(_SystemTable->ConOut, cursor);
+        current = current->next;
+    }
 }
 
 void game_over()
 {
     // Disable the timer to stop rendering the snake
     _SystemTable->BootServices->SetTimer(refresh_screen_event, TimerCancel, 0);
-    
+
     // Show the Game Over message
     _SystemTable->ConOut->SetAttribute(_SystemTable->ConOut, EFI_WHITE | EFI_BACKGROUND_BLACK);
     _SystemTable->ConOut->ClearScreen(_SystemTable->ConOut);
