@@ -1,6 +1,8 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 
+OVMF-uefi-image/OVMF-pure-efi.fd
+
 *.EFI
 *.efi
 *.hdd
