@@ -11,6 +11,9 @@
 #include "uefi-boot-services.h"
 #include "uefi-runtime-services.h"
 
+#include "uefi-protocols-simple-text.h"
+#include "uefi-protocols-image-loader.h"
+#include "uefi-protocols-rng.h"
 
 #define TRUE    1
 #define FALSE   0
