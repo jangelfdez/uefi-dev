@@ -151,8 +151,6 @@ void process_key_stroke(EFI_INPUT_KEY key)
     }
 }
 
-
-
 /**
  * Draws the cursor on the screen.
  */
