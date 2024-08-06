@@ -1,7 +1,7 @@
 #ifndef UEFI_SYSTEM_TABLE_H
 #define UEFI_SYSTEM_TABLE_H
 
-#include "uefi-simple-text-protocol.h"
+#include "uefi-protocols-simple-text.h"
 #include "uefi-boot-services.h"
 #include "uefi-runtime-services.h"
 
