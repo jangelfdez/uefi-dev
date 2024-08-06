@@ -39,10 +39,10 @@ EXAMPLE ?= $(OUTPUT_DIRECTORY)/uefi-hello-world.efi
 # 	Specifies the maximum number of errors to display before stopping compilation.
 # 	Generates debugging information in the executable file.
 CC = x86_64-w64-mingw32-gcc \
-	-Wl,--subsystem,10 \
+	-Wl,--subsystem,10,--image-base,0x400000\
 	-e efi_main \
 	-fmax-errors=5 \
-	-g
+	-g 
 
 # CC = clang \
 	-target x86_64-unknown-windows \
@@ -65,7 +65,7 @@ CFLAGS = \
 	-Wpedantic \
 	-mno-red-zone \
 	-ffreestanding \
-	-nostdlib
+	-nostdlib 
 
 info :
 	@echo "SOURCES: $(SOURCES)"
@@ -98,8 +98,7 @@ run-example: all generate-image $(EXAMPLE)
 
 debug-example: all generate-image $(EXAMPLE) 
 	@echo "Running $(EXAMPLE)"
-	$(Q)@qemu-system-x86_64 -drive format=raw,file=./UEFI-GPT-image-creator/test.hdd -bios./OVMF-uefi-image/OVMF-pure-efi.fd -name TESTOS -machine q35 -net none -S -s
-
+	$(Q)@qemu-system-x86_64 -drive format=raw,file=./UEFI-GPT-image-creator/test.hdd -bios ./OVMF-uefi-image/OVMF-pure-efi.fd -name TESTOS -machine q35 -net none -S -s
 
 clean:
 	@echo "Cleaning up $(OUTPUT_DIRECTORY) directory"
