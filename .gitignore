@@ -2,6 +2,7 @@
 .vscode/settings.json
 
 OVMF-uefi-image/OVMF-pure-efi.fd
+gdbdebug
 
 *.EFI
 *.efi
